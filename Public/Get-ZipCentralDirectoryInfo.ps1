@@ -23,11 +23,13 @@ function Get-ZipCentralDirectoryInfo
         $FileNameLength = [System.BitConverter]::ToUInt16($Bytes, $Pointer + 28)
         $ExtraFieldLength = [System.BitConverter]::ToUInt16($Bytes, $Pointer + 30)
         $FileCommentLength = [System.BitConverter]::ToUInt16($Bytes, $Pointer + 32)
+        $FileName = [System.BitConverter]::ToString($Bytes, 46, $FileNameLength)
 
         [PSCustomObject]@{
             FileNameLength    = $FileNameLength
             ExtraFieldLength  = $ExtraFieldLength
             FileCommentLength = $FileCommentLength
+            FileName          = $FileName
         }
     }
 }

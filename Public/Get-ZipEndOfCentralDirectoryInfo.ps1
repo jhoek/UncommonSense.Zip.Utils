@@ -21,9 +21,9 @@ function Get-ZipEndOfCentralDirectoryInfo
         # FIXME: Take comments into account
 
         [PSCustomObject]@{
-            PSTypeName             = 'UncommonSense.Zip.Utils.EOCDInfo'
-            CentralDirectoryOffset = [System.BitConverter]::ToUInt32($Bytes, 16)
-            CentralDirectorySize   = [System.BitConverter]::ToUInt32($Bytes, 12)
+            PSTypeName = 'UncommonSense.Zip.Utils.EOCDInfo'
+            Offset     = [System.BitConverter]::ToUInt32($Bytes, 16)
+            Size       = [System.BitConverter]::ToUInt32($Bytes, 12)
         }
     }
 }
