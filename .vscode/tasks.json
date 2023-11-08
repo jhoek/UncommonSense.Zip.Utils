@@ -8,8 +8,10 @@
             "type": "shell",
             "command": "pwsh",
             "args": [
-                "-File",
-                "test.ps1"
+                "-Command",
+                "Invoke-Pester",
+                "-Output",
+                "Detailed"
             ]
         }
     ]
