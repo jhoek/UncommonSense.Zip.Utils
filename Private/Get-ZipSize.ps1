@@ -1,22 +1,23 @@
 function Get-ZipSize
 {
-    [CmdletBinding(DefaultParameterSetName = 'Path')]
     [OutputType([int])]
     param
     (
-        [Parameter(Mandatory, ParameterSetName = 'Uri', Position = 0)]
-        [string]$Uri,
+        [Parameter(Position = 0)]
+        [ValidateSet('Path', 'Uri')]
+        [ValidateNotNullOrEmpty()]
+        [string]$Type = 'Path',
 
-        [Parameter(Mandatory, ParameterSetName = 'Path', Position = 0)]
-        [string]$Path
+        [Parameter(Mandatory, Position = 1)]
+        [string]$PathOrUri
     )
 
-    switch ($PSCmdlet.ParameterSetName)
+    switch ($Type)
     {
         'Uri'
         {
             Invoke-WebRequest `
-                -Uri $Uri `
+                -Uri $PathOrUri `
                 -Method Head
             | Select-Object -ExpandProperty Headers
             | ForEach-Object { $_.'Content-Length' }
@@ -24,7 +25,7 @@ function Get-ZipSize
 
         'Path'
         {
-            Get-Item -Path $Path
+            Get-Item -Path $PathOrUri
             | Select-Object -ExpandProperty Size
         }
     }

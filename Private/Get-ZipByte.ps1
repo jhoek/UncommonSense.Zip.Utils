@@ -1,28 +1,29 @@
 function Get-ZipByte
 {
-    [CmdletBinding(DefaultParameterSetName = 'Path')]
     [OutputType([byte])]
     param
     (
-        [Parameter(Mandatory, ParameterSetName = 'Uri', Position = 0)]
-        [string]$Uri,
-
-        [Parameter(Mandatory, ParameterSetName = 'Path', Position = 0)]
-        [string]$Path,
+        [Parameter(Position = 0)]
+        [ValidateSet('Path', 'Uri')]
+        [ValidateNotNullOrEmpty()]
+        [string]$Type = 'Path',
 
         [Parameter(Mandatory, Position = 1)]
-        [int]$Offset,
+        [string]$PathOrUri,
 
         [Parameter(Mandatory, Position = 2)]
+        [int]$Offset,
+
+        [Parameter(Mandatory, Position = 3)]
         [int]$Size
     )
 
-    switch ($PSCmdlet.ParameterSetName)
+    switch ($Type)
     {
         'Uri'
         {
             Invoke-WebRequest `
-                -Uri $Uri `
+                -Uri $PathOrUri `
                 -Headers @{'Range' = "bytes=$($Offset)-$($Offset + $Size - 1)" }
             | Select-Object -ExpandProperty Content
         }
@@ -30,7 +31,7 @@ function Get-ZipByte
         'Path'
         {
             Get-Content `
-                -Path $Path `
+                -Path $PathOrUri `
                 -AsByteStream
             | Select-Object -Skip $Offset -First $Size
         }
