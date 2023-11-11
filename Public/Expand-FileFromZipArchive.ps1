@@ -1,5 +1,6 @@
 function Expand-FileFromZipArchive
 {
+    [CmdletBinding(DefaultParameterSetName = 'Path')]
     param
     (
         [Parameter(Mandatory, ParameterSetName = 'Uri')]
@@ -13,11 +14,13 @@ function Expand-FileFromZipArchive
     )
 
     $ZipSize = Get-ZipSize -Type $PSCmdlet.ParameterSetName -PathOrUri "$($Path)$($Uri)"
-    $ZipBytes = byte[$ZipSize]
+    Write-Verbose "Zip size is $ZipSize bytes"
 
-    $LastChunkOffset = $ZipSize - 50kb
+    $ZipBytes = [byte[]]::new($ZipSize)
+
+    $LastChunkOffset = [System.Math]::Min($ZipSize - 50kb, $ZipSize)
     $LastChunkSize = $ZipSize - 1
-    $LastChunk = Get-ZipByte -Type $PSCmdlet.ParameterSetName -PathOrUri "$($Path)$($Uri)"
+    $LastChunk = Get-ZipByte -Type $PSCmdlet.ParameterSetName -PathOrUri "$($Path)$($Uri)" -Offset $LastChunkOffset -Size $LastChunkSize
     $LastChunk.CopyTo($ZipBytes, $LastChunkOffset)
 
     $Encoding = [System.Text.Encoding]::GetEncoding("iso-8859-1")
