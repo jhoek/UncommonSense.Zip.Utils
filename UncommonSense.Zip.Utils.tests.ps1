@@ -3,9 +3,12 @@
 # Get-ZipByte Path ~/Dropbox/test.zip 0 10
 # Get-ZipByte Uri 'https://www.dropbox.com/scl/fi/73eei6vciw7e73x3vzb3m/test.zip?rlkey=xket6dhbe2qd1fnfh1yc13ni9&dl=1' 0 10
 
+$ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 
-Expand-FileFromZipArchive -Uri 'https://www.dropbox.com/scl/fi/73eei6vciw7e73x3vzb3m/test.zip?rlkey=xket6dhbe2qd1fnfh1yc13ni9&dl=1' -ZipEntryPath foo.txt, bar.txt -Force
+# Expand-FileFromZipArchive -Uri 'https://www.dropbox.com/scl/fi/73eei6vciw7e73x3vzb3m/test.zip?rlkey=xket6dhbe2qd1fnfh1yc13ni9&dl=1' -ZipEntryPath foo.txt, bar.txt -Force
+
+Expand-FileFromZipArchive -Uri 'https://bcartifacts.azureedge.net/onprem/19.4.35398.35482/de' -ZipEntryPath 'Applications\BaseApp\Source\Microsoft_Base Application.app'
 
 # Describe 'UncommonSense.Zip.Utils' {
 #     Context 'From a url' {
