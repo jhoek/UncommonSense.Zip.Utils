@@ -21,8 +21,8 @@ function Expand-FileFromZipArchive
     )
 
     $Destination = $PSCmdlet.GetUnresolvedProviderPathFromPSPath($Destination)
-
     if ($Path) { $Path = $PSCmdlet.GetUnresolvedProviderPathFromPSPath($Path) }
+    $Encoding = [System.Text.Encoding]::GetEncoding("iso-8859-1")
 
     $ZipSize = Get-ZipSize -Type $PSCmdlet.ParameterSetName -PathOrUri "$($Path)$($Uri)"
     Write-Verbose "Zip size is $ZipSize bytes"
@@ -34,7 +34,6 @@ function Expand-FileFromZipArchive
     [byte[]]$LastChunk = Get-ZipByte -Type $PSCmdlet.ParameterSetName -PathOrUri "$($Path)$($Uri)" -Offset $LastChunkOffset -Size $LastChunkSize
     $LastChunk.CopyTo($ZipBytes, $LastChunkOffset)
 
-    $Encoding = [System.Text.Encoding]::GetEncoding("iso-8859-1")
     $LastChunkText = $Encoding.GetString($LastChunk)
     $EndOfCentralDirectoryText = [regex]::Match($LastChunkText, 'PK\x05\x06.*').Value
     $EndOfCentralDirectoryBytes = $Encoding.GetBytes($EndOfCentralDirectoryText)
