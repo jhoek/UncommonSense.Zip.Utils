@@ -38,10 +38,10 @@ function Expand-FileFromZipArchive
     $LastChunkText = $Encoding.GetString($LastChunk)
     $EndOfCentralDirectoryText = [regex]::Match($LastChunkText, 'PK\x05\x06.*').Value
     $EndOfCentralDirectoryBytes = $Encoding.GetBytes($EndOfCentralDirectoryText)
-    $EndOfCentralDirectoryInfo = Get-ZipEndOfCentralDirectoryInfo $EndOfCentralDirectoryBytes
+    $CentralDirectoryInfo = Get-ZipCentralDirectoryInfo $EndOfCentralDirectoryBytes
 
-    $CentralDirectoryBytes = [byte[]]::new($EndOfCentralDirectoryInfo.Size)
-    [Array]::Copy($ZipBytes, $EndOfCentralDirectoryInfo.Offset, $CentralDirectoryBytes, 0, $EndOfCentralDirectoryInfo.Size)
+    $CentralDirectoryBytes = [byte[]]::new($CentralDirectoryInfo.Size)
+    [Array]::Copy($ZipBytes, $CentralDirectoryInfo.Offset, $CentralDirectoryBytes, 0, $CentralDirectoryInfo.Size)
     $CentralDirectoryText = $Encoding.GetString($CentralDirectoryBytes)
 
     $Files = [regex]::Split($CentralDirectoryText, 'PK\x01\x02')
@@ -74,12 +74,12 @@ function Expand-FileFromZipArchive
     $Files
     | Where-Object FileName -In $ZipEntryPath
     | ForEach-Object `
-    -Begin {
+        -Begin {
         $ZipMemoryStream = [System.IO.MemoryStream]::new()
         $ZipMemoryStream.Write($ZipBytes, 0, $ZipBytes.Length)
         $ZipArchive = [System.IO.Compression.ZipArchive]::new($ZipMemoryStream)
     } `
-    -Process {
+        -Process {
         $ZipArchiveEntry = $ZipArchive.GetEntry($_.FileName)
         $DestinationPath = Join-Path -Path $Destination -ChildPath $_.FileName
         [System.IO.Compression.ZipFileExtensions]::ExtractToFile($ZipArchiveEntry, $DestinationPath, $Force)

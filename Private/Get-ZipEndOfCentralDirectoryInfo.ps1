@@ -1,4 +1,4 @@
-function Get-ZipEndOfCentralDirectoryInfo
+function Get-ZipCentralDirectoryInfo
 {
     param
     (
@@ -18,8 +18,6 @@ function Get-ZipEndOfCentralDirectoryInfo
 
     end
     {
-        # FIXME: Take comments into account
-
         [PSCustomObject]@{
             PSTypeName = 'UncommonSense.Zip.Utils.EOCDInfo'
             Offset     = [System.BitConverter]::ToUInt32($Bytes, 16)
