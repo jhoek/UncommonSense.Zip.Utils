@@ -5,7 +5,7 @@
 
 Set-StrictMode -Version Latest
 
-Expand-FileFromZipArchive -Uri 'https://www.dropbox.com/scl/fi/73eei6vciw7e73x3vzb3m/test.zip?rlkey=xket6dhbe2qd1fnfh1yc13ni9&dl=1' -ZipEntryPath foo.txt
+Expand-FileFromZipArchive -Uri 'https://www.dropbox.com/scl/fi/73eei6vciw7e73x3vzb3m/test.zip?rlkey=xket6dhbe2qd1fnfh1yc13ni9&dl=1' -ZipEntryPath foo.txt, bar.txt -Force
 
 # Describe 'UncommonSense.Zip.Utils' {
 #     Context 'From a url' {
