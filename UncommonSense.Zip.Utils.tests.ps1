@@ -1,7 +1,11 @@
-. ./Private/Get-ZipByte.ps1
+# . ./Private/Get-ZipByte.ps1
 
-Get-ZipByte ~/Dropbox/test.zip 0 10
-Get-ZipByte -Uri 'https://www.dropbox.com/scl/fi/73eei6vciw7e73x3vzb3m/test.zip?rlkey=xket6dhbe2qd1fnfh1yc13ni9&dl=1' 0 10
+# Get-ZipByte Path ~/Dropbox/test.zip 0 10
+# Get-ZipByte Uri 'https://www.dropbox.com/scl/fi/73eei6vciw7e73x3vzb3m/test.zip?rlkey=xket6dhbe2qd1fnfh1yc13ni9&dl=1' 0 10
+
+Set-StrictMode -Version Latest
+
+Expand-FileFromZipArchive -Uri 'https://www.dropbox.com/scl/fi/73eei6vciw7e73x3vzb3m/test.zip?rlkey=xket6dhbe2qd1fnfh1yc13ni9&dl=1' -ZipEntryPath foo.txt
 
 # Describe 'UncommonSense.Zip.Utils' {
 #     Context 'From a url' {

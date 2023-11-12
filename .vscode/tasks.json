@@ -8,11 +8,20 @@
             "type": "shell",
             "command": "pwsh",
             "args": [
-                "-Command",
-                "Invoke-Pester",
-                "-Output",
-                "Detailed"
+                "-File",
+                "UncommonSense.Zip.Utils.tests.ps1"
             ]
         }
+        // {
+        //     "label": "test",
+        //     "type": "shell",
+        //     "command": "pwsh",
+        //     "args": [
+        //         "-Command",
+        //         "Invoke-Pester",
+        //         "-Output",
+        //         "Detailed"
+        //     ]
+        // }
     ]
 }
