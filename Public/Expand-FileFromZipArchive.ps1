@@ -1,5 +1,6 @@
 function Expand-FileFromZipArchive
 {
+    [CmdletBinding()]
     [CmdletBinding(DefaultParameterSetName = 'Path')]
     param
     (
@@ -14,8 +15,14 @@ function Expand-FileFromZipArchive
 
         [Parameter()]
         [ValidateNotNullOrEmpty()]
-        [string]$Directory = '.'
+        [string]$Destination = '.',
+
+        [switch]$Force
     )
+
+    $Destination = $PSCmdlet.GetUnresolvedProviderPathFromPSPath($Destination)
+
+    if ($Path) { $Path = $PSCmdlet.GetUnresolvedProviderPathFromPSPath($Path) }
 
     $ZipSize = Get-ZipSize -Type $PSCmdlet.ParameterSetName -PathOrUri "$($Path)$($Uri)"
     Write-Verbose "Zip size is $ZipSize bytes"
@@ -73,9 +80,8 @@ function Expand-FileFromZipArchive
         $ZipArchive = [System.IO.Compression.ZipArchive]::new($ZipMemoryStream)
     } `
     -Process {
-        $ZipArchive.GetEntry($_.FileName)
+        $ZipArchiveEntry = $ZipArchive.GetEntry($_.FileName)
+        $DestinationPath = Join-Path -Path $Destination -ChildPath $_.FileName
+        [System.IO.Compression.ZipFileExtensions]::ExtractToFile($ZipArchiveEntry, $DestinationPath, $Force)
     }
-
-
-
 }
