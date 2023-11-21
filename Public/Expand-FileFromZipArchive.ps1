@@ -81,6 +81,13 @@ function Expand-FileFromZipArchive
         -Process {
         $ZipArchiveEntry = $ZipArchive.GetEntry($_.FileName)
         $DestinationPath = Join-Path -Path $Destination -ChildPath $_.FileName
+        $DestinationFolder = Split-Path -Path $DestinationPath -Parent
+
+        if (-not (Test-Path -Path $DestinationFolder))
+        {
+            New-Item -Path $DestinationFolder -ItemType Directory
+        }
+
         [System.IO.Compression.ZipFileExtensions]::ExtractToFile($ZipArchiveEntry, $DestinationPath, $Force)
     }
 }
