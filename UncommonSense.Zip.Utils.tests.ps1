@@ -1,18 +1,18 @@
 Describe 'UncommonSense.Zip.Utils' {
     It 'Successfully extracts a file from a url' {
         Expand-FileFromZipArchive `
-            -Uri 'https://bcartifacts.azureedge.net/onprem/19.4.35398.35482/de' `
-            -ZipEntryPath 'Applications\BaseApp\Source\Microsoft_Base Application.app' `
+            -Uri 'https://github.com/jhoek/UncommonSense.Zip.Utils/raw/main/test.zip' `
+            -ZipEntryPath 'foo.txt' `
             -Destination TestDrive:/FromUrl
 
-        (Join-Path -Path TestDrive:/FromUrl -ChildPath 'Applications\BaseApp\Source\Microsoft_Base Application.app' ) | Should -Exist
+        (Join-Path -Path TestDrive:/FromUrl -ChildPath 'foo.txt' ) | Should -Exist
     }
     It 'Successfully extracts a file from a local path' {
         Expand-FileFromZipArchive `
             -Path ./test.zip `
-            -ZipEntryPath 'Applications\BaseApp\Source\Microsoft_Base Application.app' `
+            -ZipEntryPath 'foo.txt' `
             -Destination TestDrive:/FromPath
 
-        (Join-Path -Path TestDrive:/FromPath -ChildPath 'Applications\BaseApp\Source\Microsoft_Base Application.app' ) | Should -Exist
+        (Join-Path -Path TestDrive:/FromPath -ChildPath 'foo.txt' ) | Should -Exist
     }
 }
