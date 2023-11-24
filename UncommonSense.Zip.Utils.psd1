@@ -21,13 +21,13 @@
     GUID              = '865d581e-e065-4d5f-a534-0313e32fb8b3'
 
     # Author of this module
-    Author            = 'Roy Banse/Jan Hoek'
+    Author            = 'Roy Banse and Jan Hoek'
 
     # Company or vendor of this module
     CompanyName       = 'uncommonsense.nl'
 
     # Copyright statement for this module
-    Copyright         = 'Copyright (c) 2023 Jan Hoek'
+    Copyright         = 'Copyright (c) 2023 Roy Banse and Jan Hoek'
 
     # Description of the functionality provided by this module
     Description       = 'PowerShell module to extract given files from a local or remote zip archive.'
