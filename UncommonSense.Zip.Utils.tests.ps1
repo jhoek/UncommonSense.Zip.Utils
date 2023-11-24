@@ -1,3 +1,7 @@
+# FIXME: Consider testing for destination file sizes and contents
+# FIXME: Test with multiple extracted files
+# FIXME: Test with existing destination file, both with and without -Force present
+
 Describe 'UncommonSense.Zip.Utils' {
     It 'Successfully extracts a file from a url' {
         Expand-FileFromZipArchive `
