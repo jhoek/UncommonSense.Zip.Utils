@@ -95,13 +95,13 @@
         PSData = @{
 
             # Tags applied to this module. These help with module discovery in online galleries.
-            # Tags = @()
+            Tags       = @('powershell', 'module', 'zip', 'archive', 'expand', 'extract')
 
             # A URL to the license for this module.
-            # LicenseUri = ''
+            LicenseUri = 'https://raw.githubusercontent.com/jhoek/UncommonSense.Zip.Utils/main/LICENSE'
 
             # A URL to the main website for this project.
-            # ProjectUri = ''
+            ProjectUri = 'https://github.com/jhoek/UncommonSense.Zip.Utils'
 
             # A URL to an icon representing this module.
             # IconUri = ''
