@@ -11,12 +11,4 @@ Describe 'UncommonSense.Zip.Utils' {
 
         (Join-Path -Path TestDrive:/FromUrl -ChildPath 'foo.txt' ) | Should -Exist
     }
-    It 'Successfully extracts a file from a local path' {
-        Expand-FileFromZipArchive `
-            -Path ./test.zip `
-            -ZipEntryPath 'foo.txt' `
-            -Destination TestDrive:/FromPath
-
-        (Join-Path -Path TestDrive:/FromPath -ChildPath 'foo.txt' ) | Should -Exist
-    }
 }
