@@ -1,20 +1,23 @@
 function Expand-FileFromZipArchive
 {
-    [CmdletBinding()]
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'Expand')]
     param
     (
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory, Position=0)]
         [string]$Uri,
 
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory, ParameterSetName = 'Expand')]
         [string[]]$ZipEntryPath,
 
-        [Parameter()]
+        [Parameter(ParameterSetName = 'Expand')]
         [ValidateNotNullOrEmpty()]
         [string]$Destination = '.',
 
-        [switch]$Force
+        [Parameter(ParameterSetName = 'Expand')]
+        [switch]$Force,
+
+        [Parameter(Mandatory, ParameterSetName = 'ListOnly')]
+        [switch]$ListOnly
     )
 
     $Destination = $PSCmdlet.GetUnresolvedProviderPathFromPSPath($Destination)
@@ -57,6 +60,12 @@ function Expand-FileFromZipArchive
             FileCompressedSize = $FileCompressedSize
             FileOffset         = $FileOffset
         }
+    }
+
+    if ($ListOnly)
+    {
+        ($Files).FileName
+        return
     }
 
     # FIXME: Consider looping through $ZipEntryPath instead, thus making it easier to detect if $ZipEntryPath is not present in the zip file
