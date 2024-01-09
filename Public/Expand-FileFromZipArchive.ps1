@@ -1,37 +1,36 @@
 function Expand-FileFromZipArchive
 {
-    [CmdletBinding()]
-    [CmdletBinding(DefaultParameterSetName = 'Path')]
+    [CmdletBinding(DefaultParameterSetName = 'Expand')]
     param
     (
-        [Parameter(Mandatory, ParameterSetName = 'Uri')]
+        [Parameter(Mandatory, Position=0)]
         [string]$Uri,
 
-        [Parameter(Mandatory, ParameterSetName = 'Path')]
-        [string]$Path,
-
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory, ParameterSetName = 'Expand')]
         [string[]]$ZipEntryPath,
 
-        [Parameter()]
+        [Parameter(ParameterSetName = 'Expand')]
         [ValidateNotNullOrEmpty()]
         [string]$Destination = '.',
 
-        [switch]$Force
+        [Parameter(ParameterSetName = 'Expand')]
+        [switch]$Force,
+
+        [Parameter(Mandatory, ParameterSetName = 'ListOnly')]
+        [switch]$ListOnly
     )
 
     $Destination = $PSCmdlet.GetUnresolvedProviderPathFromPSPath($Destination)
-    if ($Path) { $Path = $PSCmdlet.GetUnresolvedProviderPathFromPSPath($Path) }
     $Encoding = [System.Text.Encoding]::GetEncoding("iso-8859-1")
 
-    $ZipSize = Get-ZipSize -Type $PSCmdlet.ParameterSetName -PathOrUri "$($Path)$($Uri)"
+    $ZipSize = Get-ZipSize -Uri $Uri
     Write-Verbose "Zip size is $ZipSize bytes"
 
     $ZipBytes = [byte[]]::new($ZipSize)
 
     $LastChunkOffset = [System.Math]::Max($ZipSize - 50kb, 0)
     $LastChunkSize = $ZipSize - 1
-    [byte[]]$LastChunk = Get-ZipByte -Type $PSCmdlet.ParameterSetName -PathOrUri "$($Path)$($Uri)" -Offset $LastChunkOffset -Size $LastChunkSize
+    [byte[]]$LastChunk = Get-ZipByte -Uri $Uri -Offset $LastChunkOffset -Size $LastChunkSize
     $LastChunk.CopyTo($ZipBytes, $LastChunkOffset)
 
     $LastChunkText = $Encoding.GetString($LastChunk)
@@ -63,12 +62,18 @@ function Expand-FileFromZipArchive
         }
     }
 
+    if ($ListOnly)
+    {
+        ($Files).FileName
+        return
+    }
+
     # FIXME: Consider looping through $ZipEntryPath instead, thus making it easier to detect if $ZipEntryPath is not present in the zip file
 
     $Files
     | Where-Object FileName -In $ZipEntryPath
     | ForEach-Object {
-        [byte[]]$CompressedFileBytes = Get-ZipByte -Type $PSCmdlet.ParameterSetName -PathOrUri "$($Path)$($Uri)" -Offset $_.FileOffset -Size $_.FileCompressedSize
+        [byte[]]$CompressedFileBytes = Get-ZipByte -Uri $Uri -Offset $_.FileOffset -Size $_.FileCompressedSize
         $CompressedFileBytes.CopyTo($ZipBytes, $_.FileOffset)
     }
 
