@@ -3,7 +3,7 @@ function Expand-FileFromZipArchive
     [CmdletBinding(DefaultParameterSetName = 'Expand')]
     param
     (
-        [Parameter(Mandatory, Position=0)]
+        [Parameter(Mandatory, Position = 0)]
         [string]$Uri,
 
         [Parameter(Mandatory, ParameterSetName = 'Expand')]
@@ -15,6 +15,10 @@ function Expand-FileFromZipArchive
 
         [Parameter(ParameterSetName = 'Expand')]
         [switch]$Force,
+
+        [Parameter(ParameterSetName = 'Expand')]
+        [Alias('FlattenDirStructure')]
+        [switch]$NoContainer,
 
         [Parameter(Mandatory, ParameterSetName = 'ListOnly')]
         [switch]$ListOnly
@@ -87,7 +91,14 @@ function Expand-FileFromZipArchive
     } `
         -Process {
         $ZipArchiveEntry = $ZipArchive.GetEntry($_.FileName)
-        $DestinationPath = Join-Path -Path $Destination -ChildPath $_.FileName
+        $CurrentItem = $_
+
+        $DestinationPath = switch ($NoContainer)
+        {
+            $true { Join-Path -Path $Destination -ChildPath (Split-Path -Path $CurrentItem.FileName -Leaf) }
+            $false { Join-Path -Path $Destination -ChildPath $CurrentItem.FileName }
+        }
+
         $DestinationFolder = Split-Path -Path $DestinationPath -Parent
 
         if (-not (Test-Path -Path $DestinationFolder))
