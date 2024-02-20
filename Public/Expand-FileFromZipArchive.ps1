@@ -36,8 +36,7 @@ function Expand-FileFromZipArchive
     $ZipBytes = [byte[]]::new($ZipSize)
 
     $LastChunkOffset = [System.Math]::Max($ZipSize - $CentralDirSize, 0)
-    $LastChunkSize = $ZipSize - 1
-    [byte[]]$LastChunk = Get-ZipByte -Uri $Uri -Offset $LastChunkOffset -Size $LastChunkSize
+    [byte[]]$LastChunk = Get-ZipByte -Uri $Uri -Offset $LastChunkOffset -Size $CentralDirSize
     $LastChunk.CopyTo($ZipBytes, $LastChunkOffset)
 
     $LastChunkText = $Encoding.GetString($LastChunk)
@@ -71,7 +70,7 @@ function Expand-FileFromZipArchive
 
     if ($ListOnly)
     {
-        ($Files).FileName
+        ($Files)
         return
     }
 
