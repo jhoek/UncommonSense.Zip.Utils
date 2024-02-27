@@ -14,6 +14,6 @@
   </ItemGroup>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-        <Exec Command="pwsh -Command &quot;New-BinaryModuleManifest -Path $(TargetDir)$(TargetName).psd1 -ModulePath $(ProjectDir) -Guid 7966cc51-fb8c-48cf-9cc2-7bd010b59497 -Verbose&quot;" />
+        <Exec Command="pwsh -Command &quot;New-BinaryModuleManifest -Path $(TargetDir)$(TargetName).psd1 -ModulePath $(ProjectDir) -Guid 7966cc51-fb8c-48cf-9cc2-7bd010b59497 -Author 'Roy Banse/Jan Hoek' -Verbose&quot;" />
     </Target>
 </Project>
