@@ -31,6 +31,8 @@ public class ExpandFileFromZipArchiveCmdlet : PSCmdlet
 
     protected override async void EndProcessing()
     {
+        Destination = GetUnresolvedProviderPathFromPSPath(Destination);
+
         using var zipStream = new System.IO.Compression.HttpZipStream(Uri);
         var entries = zipStream.GetEntriesAsync().Result;
 
@@ -42,15 +44,14 @@ public class ExpandFileFromZipArchiveCmdlet : PSCmdlet
 
             case ParameterSetNames.Expand:
                 ZipEntryPath
-                    .Select(p => new { LocalPath = p, ZipEntry = entries.Single(e => e.FileName.Matches(p)) })
-
-
-                entries
-                    .Where(e => ZipEntryPath.Contains()
-
-                    e.FileName)
+                    .Select(p => new { LocalPath = BuildLocalFilePath(p, NoContainer, Destination), ZipEntry = entries.Single(e => e.FileName.Matches(p)) })
+                    .ToList()
+                    .ForEach(async p => File.WriteAllBytes(p.LocalPath, zipStream.ExtractAsync(p.ZipEntry).Result));
 
                 break;
         }
     }
+
+    private string BuildLocalFilePath(string zipEntryPath, bool noContainer, string destination) =>
+        Path.Combine(Destination, noContainer ? Path.GetFileName(zipEntryPath) : zipEntryPath);
 }
