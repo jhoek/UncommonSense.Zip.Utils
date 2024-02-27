@@ -54,5 +54,5 @@ public class ExpandFileFromZipArchiveCmdlet : PSCmdlet
     }
 
     private string BuildLocalFilePath(string zipEntryPath, bool noContainer, string destination) =>
-        Path.Combine(Destination, noContainer ? Path.GetFileName(zipEntryPath) : zipEntryPath);
+        Path.Combine(Destination, noContainer ? zipEntryPath.Split('/', '\\').Last() : zipEntryPath);
 }

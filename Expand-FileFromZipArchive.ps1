@@ -48,40 +48,38 @@
 # [Array]::Copy($ZipBytes, $CentralDirectoryInfo.Offset, $CentralDirectoryBytes, 0, $CentralDirectoryInfo.Size)
 # $CentralDirectoryText = $Encoding.GetString($CentralDirectoryBytes)
 
-$Files = [regex]::Split($CentralDirectoryText, 'PK\x01\x02')
-| Where-Object { $_.Length -ge 42 }
-| ForEach-Object {
-    $FileHeader = $_
-    $FileHeaderBytes = $Encoding.GetBytes($_)
-    $FileNameLength = [BitConverter]::ToUInt16($FileHeaderBytes, 24)
-    $FileName = $FileHeader.SubString(42, $FileNameLength)
-    $FileCompressedSize = [BitConverter]::ToUInt32($FileHeaderBytes, 16)
-    $FileOffset = [BitConverter]::ToUInt32($FileHeaderBytes, 38)
+# $Files = [regex]::Split($CentralDirectoryText, 'PK\x01\x02')
+# | Where-Object { $_.Length -ge 42 }
+# | ForEach-Object {
+#     $FileHeader = $_
+#     $FileHeaderBytes = $Encoding.GetBytes($_)
+#     $FileNameLength = [BitConverter]::ToUInt16($FileHeaderBytes, 24)
+#     $FileName = $FileHeader.SubString(42, $FileNameLength)
+#     $FileCompressedSize = [BitConverter]::ToUInt32($FileHeaderBytes, 16)
+#     $FileOffset = [BitConverter]::ToUInt32($FileHeaderBytes, 38)
 
-    [PSCustomObject]@{
-        FileHeader         = $_
-        FileHeaderBytes    = $FileHeaderBytes
-        FileNameLength     = $FileNameLength
-        FileName           = $FileName
-        FileCompressedSize = $FileCompressedSize
-        FileOffset         = $FileOffset
-    }
-}
+#     [PSCustomObject]@{
+#         FileHeader         = $_
+#         FileHeaderBytes    = $FileHeaderBytes
+#         FileNameLength     = $FileNameLength
+#         FileName           = $FileName
+#         FileCompressedSize = $FileCompressedSize
+#         FileOffset         = $FileOffset
+#     }
+# }
 
-if ($ListOnly)
-{
-        ($Files)
-    return
-}
+# if ($ListOnly)
+# {
+#         ($Files)
+#     return
+# }
 
-# FIXME: Consider looping through $ZipEntryPath instead, thus making it easier to detect if $ZipEntryPath is not present in the zip file
-
-$Files
-| Where-Object FileName -In $ZipEntryPath
-| ForEach-Object {
-    [byte[]]$CompressedFileBytes = Get-ZipByte -Uri $Uri -Offset $_.FileOffset -Size $_.FileCompressedSize
-    $CompressedFileBytes.CopyTo($ZipBytes, $_.FileOffset)
-}
+# $Files
+# | Where-Object FileName -In $ZipEntryPath
+# | ForEach-Object {
+#     [byte[]]$CompressedFileBytes = Get-ZipByte -Uri $Uri -Offset $_.FileOffset -Size $_.FileCompressedSize
+#     $CompressedFileBytes.CopyTo($ZipBytes, $_.FileOffset)
+# }
 
 $Files
 | Where-Object FileName -In $ZipEntryPath
