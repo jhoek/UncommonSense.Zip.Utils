@@ -55,7 +55,7 @@ function Expand-FileFromZipArchive
         $FileHeaderBytes = $Encoding.GetBytes($_)
         $FileNameLength = [BitConverter]::ToUInt16($FileHeaderBytes, 24)
         $FileName = $FileHeader.SubString(42, $FileNameLength)
-        $FileCompressedSize = [BitConverter]::ToUInt32($FileHeaderBytes, 16)
+        $FileCompressedSize = [BitConverter]::ToUInt32($FileHeaderBytes, 16) + 256
         $FileOffset = [BitConverter]::ToUInt32($FileHeaderBytes, 38)
 
         [PSCustomObject]@{
