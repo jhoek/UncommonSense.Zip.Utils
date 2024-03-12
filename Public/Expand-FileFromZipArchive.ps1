@@ -74,8 +74,6 @@ function Expand-FileFromZipArchive
         return
     }
 
-    # FIXME: Consider looping through $ZipEntryPath instead, thus making it easier to detect if $ZipEntryPath is not present in the zip file
-
     $Files
     | Where-Object FileName -In $ZipEntryPath
     | ForEach-Object {
